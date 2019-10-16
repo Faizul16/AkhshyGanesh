@@ -1,2 +1,0 @@
-# AkhshyGanesh
-Mini_Projects

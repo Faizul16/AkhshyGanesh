@@ -1,117 +1,89 @@
-package sudoku;
-/* Java program for Sudoku generator */
-import java.lang.*; 
+/****
+ * Created by Akhshy Ganesh, Faizul ahamed, Rohitha
+ * Mini Project 
+ * Program to generate Sudoku game
+ * Gmail : akhshyganeshb@gmail.com
+ * 		   faizulsmart10@gmail.com
+ * 		   rohithakorrapati21@gmail.com 
+ */
+package SudokuGenerator;
 
 public class Sudoku 
 { 
 	int[] mat[]; 
-	int N; // number of columns/rows. 
+	int N,K;
 	int SRN; // square root of N 
-	int K; // No. Of missing digits 
-
-	// Constructor 
+	
 	Sudoku(int N, int K) 
 	{ 
 		this.N = N; 
 		this.K = K; 
-
-		// Compute square root of N 
 		Double SRNd = Math.sqrt(N); 
 		SRN = SRNd.intValue(); 
-
 		mat = new int[N][N]; 
 	} 
-
-	// Sudoku Generator 
 	public void fillValues() 
 	{ 
-		// Fill the diagonal of SRN x SRN matrices 
-		fillDiagonal(); 
-
-		// Fill remaining blocks 
+		fillDiagonal();
 		fillRemaining(0, SRN); 
-
-		// Remove Randomly K digits to make game 
 		removeKDigits(); 
 	} 
-
-	// Fill the diagonal SRN number of SRN x SRN matrices 
 	void fillDiagonal() 
 	{ 
-
 		for (int i = 0; i<N; i=i+SRN) 
-
-			// for diagonal box, start coordinates->i==j 
 			fillBox(i, i); 
 	} 
-
-	// Returns false if given 3 x 3 block contains num. 
-	boolean unUsedInBox(int rowStart, int colStart, int num) 
+	boolean unUsedInBox(int rowStart, int colStart, int nums) 
 	{ 
 		for (int i = 0; i<SRN; i++) 
 			for (int j = 0; j<SRN; j++) 
-				if (mat[rowStart+i][colStart+j]==num) 
+				if (mat[rowStart+i][colStart+j]==nums) 
 					return false; 
-
 		return true; 
 	} 
-
-	// Fill a 3 x 3 matrix. 
 	void fillBox(int row,int col) 
 	{ 
-		int num; 
+		int nums; 
 		for (int i=0; i<SRN; i++) 
 		{ 
 			for (int j=0; j<SRN; j++) 
 			{ 
 				do
 				{ 
-					num = randomGenerator(N); 
+					nums = randomGenerator(N); 
 				} 
-				while (!unUsedInBox(row, col, num)); 
+				while (!unUsedInBox(row, col, nums)); 
 
-				mat[row+i][col+j] = num; 
+				mat[row+i][col+j] = nums; 
 			} 
 		} 
 	} 
-
-	// Random generator 
-	int randomGenerator(int num) 
+	int randomGenerator(int nums) 
 	{ 
-		return (int) Math.floor((Math.random()*num+1)); 
+		return (int) Math.floor((Math.random()*nums+1)); 
 	} 
-
-	// Check if safe to put in cell 
-	boolean CheckIfSafe(int i,int j,int num) 
+	boolean CheckIfSafe(int i,int j,int nums) 
 	{ 
-		return (unUsedInRow(i, num) && 
-				unUsedInCol(j, num) && 
-				unUsedInBox(i-i%SRN, j-j%SRN, num)); 
+		return (unUsedInRow(i, nums) && 
+				unUsedInCol(j, nums) && 
+				unUsedInBox(i-i%SRN, j-j%SRN, nums)); 
 	} 
-
-	// check in the row for existence 
-	boolean unUsedInRow(int i,int num) 
+	boolean unUsedInRow(int i,int nums) 
 	{ 
 		for (int j = 0; j<N; j++) 
-		if (mat[i][j] == num) 
+		if (mat[i][j] == nums) 
 				return false; 
 		return true; 
 	} 
-
-	// check in the row for existence 
-	boolean unUsedInCol(int j,int num) 
+	boolean unUsedInCol(int j,int nums) 
 	{ 
 		for (int i = 0; i<N; i++) 
-			if (mat[i][j] == num) 
+			if (mat[i][j] == nums) 
 				return false; 
 		return true; 
 	} 
-
-	// A recursive function to fill remaining 
-	// matrix 
 	boolean fillRemaining(int i, int j) 
 	{ 
-		// System.out.println(i+" "+j); 
 		if (j>=N && i<N-1) 
 		{ 
 			i = i + 1; 
@@ -141,46 +113,37 @@ public class Sudoku
 			} 
 		} 
 
-		for (int num = 1; num<=N; num++) 
+		for (int nums = 1; nums<=N; nums++) 
 		{ 
-			if (CheckIfSafe(i, j, num)) 
+			if (CheckIfSafe(i, j, nums)) 
 			{ 
-				mat[i][j] = num; 
+				mat[i][j] = nums; 
 				if (fillRemaining(i, j+1)) 
 					return true; 
-
 				mat[i][j] = 0; 
 			} 
 		} 
 		return false; 
 	} 
-
-	// Remove the K no. of digits to 
-	// complete game 
 	public void removeKDigits() 
 	{ 
 		int count = K; 
 		while (count != 0) 
 		{ 
 			int cellId = randomGenerator(N*N); 
-
-			// System.out.println(cellId); 
-			// extract coordinates i and j 
 			int i = (cellId/N); 
 			int j = cellId%9; 
 			if (j != 0) 
 				j = j - 1; 
 
-			// System.out.println(i+" "+j); 
 			if (mat[i][j] != 0) 
 			{ 
-				count--; 
+				count --; 
 				mat[i][j] = 0; 
 			} 
 		} 
 	} 
 
-	// Print sudoku 
 	public void printSudoku() 
 	{ 
 		for (int i = 0; i<N; i++) 
@@ -190,9 +153,7 @@ public class Sudoku
 			System.out.println(); 
 		} 
 		System.out.println(); 
-	} 
-
-	// Driver code 
+	}
 	public static void main(String[] args) 
 	{ 
 		int N = 9, K = 20; 
